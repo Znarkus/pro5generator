@@ -1,0 +1,16 @@
+{
+  "name": "pro5generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "libxmljs": "^0.14.1",
+    "lodash": "^3.9.2",
+    "xml2js": "^0.4.8"
+  }
+}
