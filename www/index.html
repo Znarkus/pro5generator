@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="pro5App">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<title>Production Timer</title>
+
+	<!-- Bootstrap -->
+	<script src="/lib/angular/angular.min.js"></script>
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+
+
+	<link rel="stylesheet" href="/lib/normalize.css/normalize.css">
+	<style>
+		/*html, body {*/
+			/*width: 100%;*/
+			/*height: 100%;*/
+			/*padding: 0;*/
+			/*margin: 0;*/
+			/*font-family: sans-serif;*/
+		/*}*/
+		html {
+			box-sizing: border-box;
+		}
+		*, *:before, *:after {
+			box-sizing: inherit;
+		}
+		textarea {
+			position: absolute;
+			left: 10px;
+			top: 10px;
+			bottom: 10px;
+			right: 49%;
+			font-size: 14px;
+			width: 49%;
+		}
+		#preview {
+			position: absolute;
+			right: 10px;
+			top: 10px;
+			bottom: 10px;
+			left: 51%;
+			overflow: auto;
+		}
+		.slide {
+			padding: 10px;
+			background: #000;
+			color: #fff;
+			margin-bottom: 20px;
+		}
+		.slide div {
+			font-style: italic;
+			text-align: right;
+		}
+		h2 {
+			margin: 0;
+		}
+		p {
+			margin: 0 0 7px;
+		}
+	</style>
+</head>
+<body ng-controller="Pro5Controller as pro5Ctrl">
+
+<textarea cols="100" rows="50" ng-model="pro5Ctrl.text" ng-change="pro5Ctrl.textChanged(pro5Ctrl.text)">
+GUDS KRAFT I DITT LIV
+
+APOSTLAGÄRNINGARNA 2:1-4 (SFB)
+1 När pingstdagen hade kommit var de alla samlade. 2 Då kom plötsligt från himlen ett dån, som när en våldsam storm drar fram, och det fyllde hela huset där de satt. 3 Tungor som av eld visade sig för dem och fördelade sig och satte sig på var och en av dem. 4 Och de uppfylldes alla av den helige Ande och började tala främmande språk, allteftersom Anden ingav dem att tala.
+
+EFESIERBREVET 3:20 (SFB)
+Han som förmår göra långt mer än allt vi ber om eller tänker, genom den kraft som mäktigt verkar i oss.
+
+APOSTLAGÄRNINGARNA 1:8 (SFB)
+När den helige ande kommer över er ska ni få KRAFT att bli mina vittnen.
+
+1. DET ÄR EN UPPMANING, INTE ETT FÖRSLAG
+
+EFESIERBREVET 5:18 (SFB2014)
+ Berusa er inte med vin, det leder till vårdslöshet. Låt er i stället uppfyllas av Anden
+
+MATTEUSEVANGELIET 28:19 (SFB)
+Gå därför ut och gör alla folk till lärjungar! Döp dem i Faderns och Sonens och den helige Andes namn
+
+1 KORINTIERBREVET 2:3-4 (SVL) 
+3-4 Mitt budskap var så enkelt att jag kände mig rädd och ängslig. Det innehöll inte en massa vältalighet och mänsklig visdom, men den helige Andes kraft fanns i mina ord och bevisade för dem som lyssnade att budskapet kom från Gud
+
+
+2. DET ÄR EN RELATION, INTE EN ENGÅNGSDATE
+
+
+3. BARA DU KAN HINDRA DIG FRÅN DEN HELIGE ANDES KRAFT
+
+
+JAKOBSBREVET 4:5-6 (SFB)
+ 5 ”Avundsjukt längtar den Ande som han har låtit bo i oss?" 6 Men större är nåden han ger. Därför heter det: Gud står emot de högmodiga, men de ödmjuka ger han nåd.
+
+APOSTLAGÄRNINGARNA 2:36-38 (SFB) 
+36 Därför skall hela Israels folk veta att denne Jesus som ni korsfäste, honom har Gud gjort både till Herre och Messias."
+37 När de hörde detta, högg det till i hjärtat på dem, och de frågade Petrus och de andra apostlarna: "Bröder, vad skall vi göra?" 38 Petrus svarade dem: "Omvänd er och låt er alla döpas i Jesu Kristi namn, så att era synder blir förlåtna. Då skall ni få den helige Ande som gåva.</textarea>
+
+<div id="preview">
+	<div class="slide" ng-repeat="slide in pro5Ctrl.parsed">
+		<h2 ng-show="slide.title">{{slide.title}}</h2>
+		<p ng-show="slide.verse">{{slide.verse}}</p>
+		<div ng-show="slide.reference">{{slide.reference}}</div>
+	</div>
+</div>
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script src="/lib/lodash/lodash.min.js"></script>
+<script>
+	angular
+			.module('pro5App', [])
+			.controller('Pro5Controller', function() {
+				var _this = this;
+
+				if (localStorage.getItem('lastText')) {
+					_this.text = localStorage.getItem('lastText');
+					_this.parsed = parseText(_this.text);
+				}
+
+				_this.textChanged = function(newValue) {
+					localStorage.setItem('lastText', newValue);
+					_this.parsed = parseText(newValue);
+				};
+			});
+
+	function parseText(text) {
+		var mainParts = text.split(/\n{2,}/);
+		var slides = [];
+
+		_.forEach(mainParts, function(part, index) {
+			var match;
+
+			part = _.omit(part.split('\n').map(_.trim), _.isEmpty);
+
+			if (_.size(part) == 1) {
+				// Title
+				slides.push({ title: part[0] });
+			} else {
+				part = { reference: part[0], verse: _.slice(_.values(part), 1).join(' ') };
+
+				_.forEach(splitVerse(part.verse), function(verse) {
+					var slide = _.clone(part);
+					slide.verse = verse;
+					slides.push(slide);
+				});
+			}
+
+//			mainParts[index] = part;
+		});
+
+		console.log(slides);
+
+		return slides;
+	}
+
+	function splitVerse(verse) {
+		var match = verse.match(/^[0-9]+/);
+		var verses = [];
+
+		if (!match) {
+			return [verse];
+		}
+
+		for (var i = _.parseInt(match[0]); verse; i++) {
+			var nextIndex = verse.indexOf(i + 1);
+			var part;
+
+			if (nextIndex > -1) {
+				part = verse.substr(0, nextIndex);
+
+				if (part.length > 5) {
+					verses.push(part);
+					verse = verse.substr(nextIndex);
+				}
+			} else {
+				verses.push(verse);
+				verse = '';
+			}
+		}
+
+		return verses;
+	}
+</script>
+
+</body>
+</html>
