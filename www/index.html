@@ -67,6 +67,20 @@
 		p {
 			margin: 0 0 7px;
 		}
+		#toolbar {
+			background: #D7E5ED;
+			text-align: center;
+			padding: 10px;
+			margin-bottom: 20px;
+		}
+		button {
+			padding: 3px;
+			font-size: 18px;
+		}
+		h1 {
+			border-top: 1px solid #AAA;
+			padding-top: 5px;
+		}
 	</style>
 </head>
 <body ng-controller="Pro5Controller as pro5Ctrl">
@@ -109,6 +123,12 @@ APOSTLAGÄRNINGARNA 2:36-38 (SFB) 
 37 När de hörde detta, högg det till i hjärtat på dem, och de frågade Petrus och de andra apostlarna: "Bröder, vad skall vi göra?" 38 Petrus svarade dem: "Omvänd er och låt er alla döpas i Jesu Kristi namn, så att era synder blir förlåtna. Då skall ni få den helige Ande som gåva.</textarea>
 
 <div id="preview">
+	<div id="toolbar">
+		<button>Download .pro5 file</button>
+	</div>
+
+	<h1>Slide separation preview:</h1>
+
 	<div class="slide" ng-repeat="slide in pro5Ctrl.parsed">
 		<h2 ng-show="slide.title">{{slide.title}}</h2>
 		<p ng-show="slide.verse">{{slide.verse}}</p>
