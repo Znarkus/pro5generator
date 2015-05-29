@@ -20,12 +20,12 @@ var debug = require('debug')('app');
 //	}
 //];
 
-exports.generate = function(content, outputDir) {
+exports.generate = function(templatePath, content, outputDir) {
 	var outputPath = outputDir
 		+ moment().format('YYMMDD-')
 		+ base.decTo62(new Date().getTime()) + '.pro5';
 
-	return fs.readFileAsync('template/preach.pro5')
+	return fs.readFileAsync(templatePath)
 		.then(function(xml) {
 			var xmlDoc = libxmljs.parseXml(xml);
 			var titleSlide;
