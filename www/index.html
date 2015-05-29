@@ -124,14 +124,18 @@ APOSTLAGÄRNINGARNA 2:36-38 (SFB) 
 
 <div id="preview">
 	<div id="toolbar">
-		<button>Download .pro5 file</button>
+		<!--<form action="/download" method="post">-->
+			<!--<input type="hidden" name="data" ng-value="pro5Ctrl.parsed">-->
+			<button ng-click="pro5Ctrl.download()">Download .pro5 file</button>
+			<!--<pre>{{pro5Ctrl.parsed}}</pre>-->
+		<!--</form>-->
 	</div>
 
 	<h1>Slide separation preview:</h1>
 
 	<div class="slide" ng-repeat="slide in pro5Ctrl.parsed">
 		<h2 ng-show="slide.title">{{slide.title}}</h2>
-		<p ng-show="slide.verse">{{slide.verse}}</p>
+		<p ng-show="slide.verse"><sup>{{slide.verse.number}}</sup> {{slide.verse.text}}</p>
 		<div ng-show="slide.reference">{{slide.reference}}</div>
 	</div>
 </div>
@@ -143,7 +147,7 @@ APOSTLAGÄRNINGARNA 2:36-38 (SFB) 
 <script>
 	angular
 			.module('pro5App', [])
-			.controller('Pro5Controller', function() {
+			.controller('Pro5Controller', function($http) {
 				var _this = this;
 
 				if (localStorage.getItem('lastText')) {
@@ -155,14 +159,20 @@ APOSTLAGÄRNINGARNA 2:36-38 (SFB) 
 					localStorage.setItem('lastText', newValue);
 					_this.parsed = parseText(newValue);
 				};
+
+				_this.download = function() {
+					$http.post('/download', _this.parsed).success(function(r) {
+						location = r.url;
+					});
+				};
 			});
 
 	function parseText(text) {
 		var mainParts = text.split(/\n{2,}/);
 		var slides = [];
 
-		_.forEach(mainParts, function(part, index) {
-			var match;
+		_.forEach(mainParts, function(part) {
+//			var match;
 
 			part = _.omit(part.split('\n').map(_.trim), _.isEmpty);
 
@@ -172,7 +182,7 @@ APOSTLAGÄRNINGARNA 2:36-38 (SFB) 
 			} else {
 				part = { reference: part[0], verse: _.slice(_.values(part), 1).join(' ') };
 
-				_.forEach(splitVerse(part.verse), function(verse) {
+				_.forEach(splitVerses(part.verse), function(verse) {
 					var slide = _.clone(part);
 					slide.verse = verse;
 					slides.push(slide);
@@ -187,32 +197,43 @@ APOSTLAGÄRNINGARNA 2:36-38 (SFB) 
 		return slides;
 	}
 
-	function splitVerse(verse) {
-		var match = verse.match(/^[0-9]+/);
+	function splitVerses(versesString) {
+		var match = versesString.match(/^\d+/);		// First verse number
+		var rangeMatch = versesString.match(/^(\d\s*[-–]\s*\d)+\s*(.+)$/);		// First verse number
 		var verses = [];
 
-		if (!match) {
-			return [verse];
+		if (rangeMatch) {
+			return [createVerse(rangeMatch[2], rangeMatch[1])];
 		}
 
-		for (var i = _.parseInt(match[0]); verse; i++) {
-			var nextIndex = verse.indexOf(i + 1);
-			var part;
+		if (!match) {
+			return [createVerse(versesString)];
+		}
+
+		for (var verseNumber = _.parseInt(match[0]); versesString; verseNumber++) {
+			var nextIndex = versesString.indexOf(verseNumber + 1);	// Position of next verse number
+			var verse;
 
 			if (nextIndex > -1) {
-				part = verse.substr(0, nextIndex);
-
-				if (part.length > 5) {
-					verses.push(part);
-					verse = verse.substr(nextIndex);
+				if (nextIndex < 5) {	// Next verse number must be at least 5 chars away
+					break;	// Dunno
+				} else {
+					verse = versesString.substr(0, nextIndex);
+					versesString = versesString.substr(nextIndex);
 				}
 			} else {
-				verses.push(verse);
-				verse = '';
+				verse = versesString;
+				versesString = '';
 			}
+
+			verses.push(createVerse(verse, verseNumber));
 		}
 
 		return verses;
+	}
+
+	function createVerse(text, number) {
+		return { number: number, text: text.replace(new RegExp('^' + number + '\\s*'), '') };
 	}
 </script>
 
