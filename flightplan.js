@@ -11,7 +11,7 @@ plan.target('production', [
 
 var tmpDir = 'pro5gen-' + new Date().getTime();
 var deployBasePath = '~/pro5gen/';
-var currentPath = deployBasePath + 'current/';
+var currentPath = deployBasePath + 'current';
 var latestPath = deployBasePath + tmpDir;
 
 // run commands on localhost
@@ -36,6 +36,6 @@ plan.remote(function(remote) {
 
 
 	remote.log('Reload application');
-	remote.ln('-snf ' + currentPath + ' ' + latestPath);
+	remote.ln('-snf ' + latestPath + ' ' + currentPath);
 	//remote.sudo('pm2 reload example-com', {user: 'www'});
 });
