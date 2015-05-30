@@ -32,10 +32,14 @@ plan.remote(function(remote) {
 	
 	remote.with('cd ' + latestPath, function() {
 		remote.exec('npm --production install');
+		remote.exec('bower i');
 	});
 
 
 	remote.log('Reload application');
 	remote.ln('-snf ' + latestPath + ' ' + currentPath);
-	//remote.sudo('pm2 reload example-com', {user: 'www'});
+
+	remote.with('cd ' + deployBasePath, function() {
+		remote.exec('forever restart current');
+	});
 });
