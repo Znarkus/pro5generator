@@ -198,8 +198,10 @@ APOSTLAGÄRNINGARNA 2:36-38 (SFB) 
 	}
 
 	function splitVerses(versesString) {
-		var match = versesString.match(/^\d+/);		// First verse number
-		var rangeMatch = versesString.match(/^(\d\s*[-–]\s*\d)+\s*(.+)$/);		// First verse number
+		var oneNumberRegex = /^\d+/;
+		var rangeNumbersRegex = /^(\d\s*[-–]\s*\d)+\s*(.+)$/;
+		var match = versesString.match(oneNumberRegex);		// First verse number
+		var rangeMatch = versesString.match(rangeNumbersRegex);		// First verse number
 		var verses = [];
 
 		if (rangeMatch) {
@@ -211,12 +213,27 @@ APOSTLAGÄRNINGARNA 2:36-38 (SFB) 
 		}
 
 		for (var verseNumber = _.parseInt(match[0]); versesString; verseNumber++) {
-			var nextIndex = versesString.indexOf(verseNumber + 1);	// Position of next verse number
+			var nextVerseNumber = verseNumber + 1;
+			var nextIndex = versesString.indexOf(nextVerseNumber);	// Position of next verse number
 			var verse;
+
+//			match = versesString.match(new RegExp(nextVerseNumber));		// First verse number
+			rangeNumbersRegex = new RegExp('(' + verseNumber + ')\\s*[-–]\\s*(\\d+)+\\s*(.+)$');
+			rangeMatch = versesString.match(rangeNumbersRegex);		// First verse number
 
 			if (nextIndex > -1) {
 				if (nextIndex < 5) {	// Next verse number must be at least 5 chars away
-					break;	// Dunno
+					if (rangeMatch) {
+						nextVerseNumber = _.parseInt(rangeMatch[2]) + 1;
+						nextIndex = versesString.indexOf(nextVerseNumber);
+						verse = versesString.substr(0, nextIndex);
+						versesString = versesString.substr(nextIndex);
+						verses.push(createVerse(verse, rangeMatch[1] + '-' + rangeMatch[2]));
+						verseNumber = nextVerseNumber - 1;
+						continue;
+					} else {
+						break;	// Dunno
+					}
 				} else {
 					verse = versesString.substr(0, nextIndex);
 					versesString = versesString.substr(nextIndex);

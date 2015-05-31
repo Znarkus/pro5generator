@@ -67,7 +67,7 @@ exports.generate = function(templatePath, content, outputDir) {
 						debug('Text element: %s', string);
 						string = string.replace('BIBLEVERSE', node.verse.text);
 						string = string.replace('VERSENUMBER', node.verse.number ? node.verse.number : '');
-						string = string.replace('BIBLEREFERENCE', node.reference);
+						string = string.replace('BIBLEREFERENCE', node.reference.toUpperCase());
 						attr.value(new Buffer(convertUnicode(string)).toString('base64'));
 					});
 				}
