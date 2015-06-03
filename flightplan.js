@@ -33,6 +33,7 @@ plan.remote(function(remote) {
 	remote.with('cd ' + latestPath, function() {
 		remote.exec('npm --production install');
 		remote.exec('bower i');
+		remote.exec('npm run-script build');
 	});
 
 
