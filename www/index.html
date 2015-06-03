@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="pro5App">
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -81,9 +81,12 @@
 			border-top: 1px solid #AAA;
 			padding-top: 5px;
 		}
+		body {
+			transition: opacity 0.5s;
+		}
 	</style>
 </head>
-<body ng-controller="Pro5Controller as pro5Ctrl">
+<body ng-controller="Pro5Controller as pro5Ctrl" style="opacity: 0" ng-style="{opacity:1}">
 
 <textarea cols="100" rows="50" ng-model="pro5Ctrl.text" ng-change="pro5Ctrl.textChanged(pro5Ctrl.text)">
 GUDS KRAFT I DITT LIV
@@ -144,114 +147,36 @@ APOSTLAGÄRNINGARNA 2:36-38 (SFB) 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="/lib/jquery/dist/jquery.min.js"></script>
 <script src="/lib/lodash/lodash.min.js"></script>
+<!--<script src="bundle.js"></script>-->
+<script src="/lib/requirejs/require.js"></script>
 <script>
-	angular
-			.module('pro5App', [])
-			.controller('Pro5Controller', function($http) {
-				var _this = this;
+	requirejs(['bundle'], function(Parser) {
+		console.log(Parser);
+		angular
+				.module('pro5App', [])
+				.controller('Pro5Controller', function($http) {
+					var _this = this;
 
-				if (localStorage.getItem('lastText')) {
-					_this.text = localStorage.getItem('lastText');
-					_this.parsed = parseText(_this.text);
-				}
-
-				_this.textChanged = function(newValue) {
-					localStorage.setItem('lastText', newValue);
-					_this.parsed = parseText(newValue);
-				};
-
-				_this.download = function() {
-					$http.post('/download', _this.parsed).success(function(r) {
-						location = r.url;
-					});
-				};
-			});
-
-	function parseText(text) {
-		var mainParts = text.split(/\n{2,}/);
-		var slides = [];
-
-		_.forEach(mainParts, function(part) {
-//			var match;
-
-			part = _.omit(part.split('\n').map(_.trim), _.isEmpty);
-
-			if (_.size(part) == 1) {
-				// Title
-				slides.push({ title: part[0] });
-			} else {
-				part = { reference: part[0], verse: _.slice(_.values(part), 1).join(' ') };
-
-				_.forEach(splitVerses(part.verse), function(verse) {
-					var slide = _.clone(part);
-					slide.verse = verse;
-					slides.push(slide);
-				});
-			}
-
-//			mainParts[index] = part;
-		});
-
-		console.log(slides);
-
-		return slides;
-	}
-
-	function splitVerses(versesString) {
-		var oneNumberRegex = /^\d+/;
-		var rangeNumbersRegex = /^(\d\s*[-–]\s*\d)+\s*(.+)$/;
-		var match = versesString.match(oneNumberRegex);		// First verse number
-		var rangeMatch = versesString.match(rangeNumbersRegex);		// First verse number
-		var verses = [];
-
-		if (rangeMatch) {
-			return [createVerse(rangeMatch[2], rangeMatch[1])];
-		}
-
-		if (!match) {
-			return [createVerse(versesString)];
-		}
-
-		for (var verseNumber = _.parseInt(match[0]); versesString; verseNumber++) {
-			var nextVerseNumber = verseNumber + 1;
-			var nextIndex = versesString.indexOf(nextVerseNumber);	// Position of next verse number
-			var verse;
-
-//			match = versesString.match(new RegExp(nextVerseNumber));		// First verse number
-			rangeNumbersRegex = new RegExp('(' + verseNumber + ')\\s*[-–]\\s*(\\d+)+\\s*(.+)$');
-			rangeMatch = versesString.match(rangeNumbersRegex);		// First verse number
-
-			if (nextIndex > -1) {
-				if (nextIndex < 5) {	// Next verse number must be at least 5 chars away
-					if (rangeMatch) {
-						nextVerseNumber = _.parseInt(rangeMatch[2]) + 1;
-						nextIndex = versesString.indexOf(nextVerseNumber);
-						verse = versesString.substr(0, nextIndex);
-						versesString = versesString.substr(nextIndex);
-						verses.push(createVerse(verse, rangeMatch[1] + '-' + rangeMatch[2]));
-						verseNumber = nextVerseNumber - 1;
-						continue;
-					} else {
-						break;	// Dunno
+					if (localStorage.getItem('lastText')) {
+						_this.text = localStorage.getItem('lastText');
+						_this.parsed = Parser.parseText(_this.text);
 					}
-				} else {
-					verse = versesString.substr(0, nextIndex);
-					versesString = versesString.substr(nextIndex);
-				}
-			} else {
-				verse = versesString;
-				versesString = '';
-			}
 
-			verses.push(createVerse(verse, verseNumber));
-		}
+					_this.textChanged = function(newValue) {
+						localStorage.setItem('lastText', newValue);
+						_this.parsed = Parser.parseText(newValue);
+					};
 
-		return verses;
-	}
+					_this.download = function() {
+						$http.post('/download', _this.parsed).success(function(r) {
+							location = r.url;
+						});
+					};
+				});
 
-	function createVerse(text, number) {
-		return { number: number, text: text.replace(new RegExp('^' + number + '\\s*'), '') };
-	}
+		angular.bootstrap(document, ['pro5App']);
+	});
+
 </script>
 
 </body>

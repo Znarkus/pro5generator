@@ -2,3 +2,5 @@
 node_modules/
 *.pro5
 bower_components/
+*.docx
+www/bundle.js
