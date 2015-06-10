@@ -10,6 +10,7 @@
 	<!-- Bootstrap -->
 	<script src="/lib/angular/angular.min.js"></script>
 	<script src="/lib/angular-ui-router/release/angular-ui-router.min.js"></script>
+	<script src="/lib/angular-animate/angular-animate.min.js"></script>
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -23,7 +24,7 @@
 </head>
 <body>
 
-<div ui-view></div>
+<div ui-view id="container"></div>
 
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -34,7 +35,7 @@
 <script>
 	requirejs(['bundle'], function(Parser) {
 		angular
-				.module('pro5App', ['ui.router'])
+				.module('pro5App', ['ui.router', 'ngAnimate'])
 				.config(function($stateProvider, $urlRouterProvider) {
 					//
 					// For any unmatched url, redirect to /state1
@@ -47,6 +48,9 @@
 								controller: 'Pro5Controller as pro5Ctrl',
 								templateUrl: 'partial/editor.html',
 								resolve: {
+									example: function($http) {
+										return $http.get('help/example.txt');
+									},
 									templates: function($http, $stateParams) {
 										return $http.get('template?account=' + $stateParams.account);
 									}
@@ -68,7 +72,7 @@
 					this.template = $stateParams.template;
 					this.example = example.data;
 				})
-				.controller('Pro5Controller', function($http, $stateParams, templates) {
+				.controller('Pro5Controller', function($http, $stateParams, templates, example) {
 					var _this = this;
 
 					_this.templates = templates.data;
@@ -77,8 +81,11 @@
 
 					if (localStorage.getItem('lastText')) {
 						_this.text = localStorage.getItem('lastText');
-						_this.parsed = Parser.parseText(_this.text);
+					} else {
+						_this.text = example.data;
 					}
+
+					_this.parsed = Parser.parseText(_this.text);
 
 					_this.textChanged = function(newValue) {
 						localStorage.setItem('lastText', newValue);
@@ -88,6 +95,8 @@
 					_this.download = function() {
 						$http.post('/download', { account: _this.account, template: _this.template, parsed: _this.parsed }).success(function(r) {
 							location = r.url;
+						}).error(function(err) {
+							alert('An error occured, sorry.');
 						});
 					};
 				});

@@ -40,7 +40,7 @@ plan.remote(function(remote) {
 	remote.log('Reload application');
 	remote.ln('-snf ' + latestPath + ' ' + currentPath);
 
-	remote.with('cd ' + deployBasePath, function() {
-		remote.exec('forever restart current');
-	});
+	//remote.with('cd ' + deployBasePath, function() {
+	remote.exec('sudo restart pro5gen');
+	//});
 });

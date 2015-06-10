@@ -11,6 +11,18 @@ html {
 *, *:before, *:after {
 	box-sizing: inherit;
 }
+#container {
+	opacity: 1;
+	transition: opacity .5s;
+}
+#container.ng-leave,
+#container.ng-enter {
+	opacity: 0;
+}
+#container.ng-enter-leave,
+#container.ng-enter-active {
+	opacity: 1;
+}
 #toolbar {
 	position: absolute;
 	left: 10px;

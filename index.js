@@ -33,13 +33,20 @@ app.use(function(req, res, next) {
 
 // Routes
 app.get('/template', function(req, res) {
-	console.log(req.accountDir	);
+	if (!req.accountDir) {
+		return res.status(400).end();
+	}
+
 	glob(Path.resolve(req.accountDir, '*.pro5'), function(err, files) {
 		res.send(files.map(Path.basename));
 	});
 });
 
 app.post('/download', function(req, res) {
+	if (!req.account || !req.template || !req.accountDir || !req.body.parsed) {
+		return res.status(400).end();
+	}
+
 	generate(
 		Path.resolve(req.accountDir, req.template),
 		req.body.parsed,
