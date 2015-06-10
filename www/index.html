@@ -9,6 +9,7 @@
 
 	<!-- Bootstrap -->
 	<script src="/lib/angular/angular.min.js"></script>
+	<script src="/lib/angular-ui-router/release/angular-ui-router.min.js"></script>
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -17,131 +18,12 @@
 	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
 
-
-
 	<link rel="stylesheet" href="/lib/normalize.css/normalize.css">
-	<style>
-		/*html, body {*/
-			/*width: 100%;*/
-			/*height: 100%;*/
-			/*padding: 0;*/
-			/*margin: 0;*/
-			/*font-family: sans-serif;*/
-		/*}*/
-		html {
-			box-sizing: border-box;
-		}
-		*, *:before, *:after {
-			box-sizing: inherit;
-		}
-		textarea {
-			position: absolute;
-			left: 10px;
-			top: 10px;
-			bottom: 10px;
-			right: 49%;
-			font-size: 14px;
-			width: 49%;
-		}
-		#preview {
-			position: absolute;
-			right: 10px;
-			top: 10px;
-			bottom: 10px;
-			left: 51%;
-			overflow: auto;
-		}
-		.slide {
-			padding: 10px;
-			background: #000;
-			color: #fff;
-			margin-bottom: 20px;
-		}
-		.slide div {
-			font-style: italic;
-			text-align: right;
-		}
-		h2 {
-			margin: 0;
-		}
-		p {
-			margin: 0 0 7px;
-		}
-		#toolbar {
-			background: #D7E5ED;
-			text-align: center;
-			padding: 10px;
-			margin-bottom: 20px;
-		}
-		button {
-			padding: 3px;
-			font-size: 18px;
-		}
-		h1 {
-			border-top: 1px solid #AAA;
-			padding-top: 5px;
-		}
-		body {
-			transition: opacity 0.5s;
-		}
-	</style>
+	<link rel="stylesheet" href="style.css">
 </head>
-<body ng-controller="Pro5Controller as pro5Ctrl" style="opacity: 0" ng-style="{opacity:1}">
+<body>
 
-<textarea cols="100" rows="50" ng-model="pro5Ctrl.text" ng-change="pro5Ctrl.textChanged(pro5Ctrl.text)">
-GUDS KRAFT I DITT LIV
-
-APOSTLAGÄRNINGARNA 2:1-4 (SFB)
-1 När pingstdagen hade kommit var de alla samlade. 2 Då kom plötsligt från himlen ett dån, som när en våldsam storm drar fram, och det fyllde hela huset där de satt. 3 Tungor som av eld visade sig för dem och fördelade sig och satte sig på var och en av dem. 4 Och de uppfylldes alla av den helige Ande och började tala främmande språk, allteftersom Anden ingav dem att tala.
-
-EFESIERBREVET 3:20 (SFB)
-Han som förmår göra långt mer än allt vi ber om eller tänker, genom den kraft som mäktigt verkar i oss.
-
-APOSTLAGÄRNINGARNA 1:8 (SFB)
-När den helige ande kommer över er ska ni få KRAFT att bli mina vittnen.
-
-1. DET ÄR EN UPPMANING, INTE ETT FÖRSLAG
-
-EFESIERBREVET 5:18 (SFB2014)
- Berusa er inte med vin, det leder till vårdslöshet. Låt er i stället uppfyllas av Anden
-
-MATTEUSEVANGELIET 28:19 (SFB)
-Gå därför ut och gör alla folk till lärjungar! Döp dem i Faderns och Sonens och den helige Andes namn
-
-1 KORINTIERBREVET 2:3-4 (SVL) 
-3-4 Mitt budskap var så enkelt att jag kände mig rädd och ängslig. Det innehöll inte en massa vältalighet och mänsklig visdom, men den helige Andes kraft fanns i mina ord och bevisade för dem som lyssnade att budskapet kom från Gud
-
-
-2. DET ÄR EN RELATION, INTE EN ENGÅNGSDATE
-
-
-3. BARA DU KAN HINDRA DIG FRÅN DEN HELIGE ANDES KRAFT
-
-
-JAKOBSBREVET 4:5-6 (SFB)
- 5 ”Avundsjukt längtar den Ande som han har låtit bo i oss?" 6 Men större är nåden han ger. Därför heter det: Gud står emot de högmodiga, men de ödmjuka ger han nåd.
-
-APOSTLAGÄRNINGARNA 2:36-38 (SFB) 
-36 Därför skall hela Israels folk veta att denne Jesus som ni korsfäste, honom har Gud gjort både till Herre och Messias."
-37 När de hörde detta, högg det till i hjärtat på dem, och de frågade Petrus och de andra apostlarna: "Bröder, vad skall vi göra?" 38 Petrus svarade dem: "Omvänd er och låt er alla döpas i Jesu Kristi namn, så att era synder blir förlåtna. Då skall ni få den helige Ande som gåva.</textarea>
-
-<div id="preview">
-	<div id="toolbar">
-		<!--<form action="/download" method="post">-->
-			<!--<input type="hidden" name="data" ng-value="pro5Ctrl.parsed">-->
-			<button ng-click="pro5Ctrl.download()">Download .pro5 file</button>
-			<!--<pre>{{pro5Ctrl.parsed}}</pre>-->
-		<!--</form>-->
-	</div>
-
-	<h1>Slide separation preview:</h1>
-
-	<div class="slide" ng-repeat="slide in pro5Ctrl.parsed">
-		<h2 ng-show="slide.title">{{slide.title}}</h2>
-		<p ng-show="slide.verse"><sup>{{slide.verse.number}}</sup> {{slide.verse.text}}</p>
-		<div ng-show="slide.reference">{{slide.reference}}</div>
-	</div>
-</div>
+<div ui-view></div>
 
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -151,11 +33,47 @@ APOSTLAGÄRNINGARNA 2:36-38 (SFB) 
 <script src="/lib/requirejs/require.js"></script>
 <script>
 	requirejs(['bundle'], function(Parser) {
-		console.log(Parser);
 		angular
-				.module('pro5App', [])
-				.controller('Pro5Controller', function($http) {
+				.module('pro5App', ['ui.router'])
+				.config(function($stateProvider, $urlRouterProvider) {
+					//
+					// For any unmatched url, redirect to /state1
+//					$urlRouterProvider.otherwise("/editor");
+					//
+					// Now set up the states
+					$stateProvider
+							.state('editor', {
+								url: '/editor/:account/:template',
+								controller: 'Pro5Controller as pro5Ctrl',
+								templateUrl: 'partial/editor.html',
+								resolve: {
+									templates: function($http, $stateParams) {
+										return $http.get('template?account=' + $stateParams.account);
+									}
+								}
+							})
+							.state('help', {
+								url: '/editor/:account/:template/help',
+								templateUrl: 'partial/help.html',
+								controller: 'HelpController as helpCtrl',
+								resolve: {
+									example: function($http) {
+										return $http.get('help/example.txt');
+									}
+								}
+							});
+				})
+				.controller('HelpController', function($http, $stateParams, example) {
+					this.account = $stateParams.account;
+					this.template = $stateParams.template;
+					this.example = example.data;
+				})
+				.controller('Pro5Controller', function($http, $stateParams, templates) {
 					var _this = this;
+
+					_this.templates = templates.data;
+					_this.account = $stateParams.account;
+					_this.template = $stateParams.template ? $stateParams.template : _this.templates[0];
 
 					if (localStorage.getItem('lastText')) {
 						_this.text = localStorage.getItem('lastText');
@@ -168,7 +86,7 @@ APOSTLAGÄRNINGARNA 2:36-38 (SFB) 
 					};
 
 					_this.download = function() {
-						$http.post('/download', _this.parsed).success(function(r) {
+						$http.post('/download', { account: _this.account, template: _this.template, parsed: _this.parsed }).success(function(r) {
 							location = r.url;
 						});
 					};

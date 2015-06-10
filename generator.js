@@ -7,6 +7,7 @@ var _ = require('lodash');
 var base = require('base-converter');
 var moment = require('moment');
 var debug = require('debug')('app');
+var Path = require('path');
 //var rtfjs = require('rtf.js');
 //var content = [
 //	{ title: 'GUDS KRAFT I DITT LIV' },
@@ -21,9 +22,10 @@ var debug = require('debug')('app');
 //];
 
 exports.generate = function(templatePath, content, outputDir) {
-	var outputPath = outputDir
-		+ moment().format('YYMMDD-')
-		+ base.decTo62(new Date().getTime()) + '.pro5';
+	var outputPath = Path.resolve(
+		outputDir,
+		moment().format('YYMMDD-') + base.decTo62(new Date().getTime()) + '.pro5'
+	);
 
 	return fs.readFileAsync(templatePath)
 		.then(function(xml) {

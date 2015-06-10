@@ -1,0 +1,29 @@
+<div id="toolbar">
+	<a ng-repeat="template in pro5Ctrl.templates" ui-sref="editor({ account: pro5Ctrl.account, template: template })" ng-class="{'active': pro5Ctrl.template == template}">
+		{{ template }}
+	</a>
+
+	<aside>
+		<a ui-sref="help({ account: pro5Ctrl.account, template: pro5Ctrl.template })">Help</a>
+	</aside>
+</div>
+
+<textarea id="text" cols="100" rows="50" ng-model="pro5Ctrl.text" ng-change="pro5Ctrl.textChanged(pro5Ctrl.text)"></textarea>
+
+<div id="preview">
+	<div id="preview-bar">
+		<!--<form action="/download" method="post">-->
+		<!--<input type="hidden" name="data" ng-value="pro5Ctrl.parsed">-->
+		<button ng-click="pro5Ctrl.download()">Download .pro5 file</button>
+		<!--<pre>{{pro5Ctrl.parsed}}</pre>-->
+		<!--</form>-->
+	</div>
+
+	<h1>Slide separation preview:</h1>
+
+	<div class="slide" ng-repeat="slide in pro5Ctrl.parsed">
+		<h2 ng-show="slide.title">{{slide.title}}</h2>
+		<p ng-show="slide.verse"><sup>{{slide.verse.number}}</sup> {{slide.verse.text}}</p>
+		<div ng-show="slide.reference">{{slide.reference}}</div>
+	</div>
+</div>
