@@ -2,6 +2,8 @@
 
 var should = require('should');
 var Parser = require('../lib/parser');
+var Promise = require('bluebird');
+var readFile = Promise.promisify(require('fs').readFile);
 
 describe('Parser', function() {
 	describe('#initialNumber', function() {
@@ -178,23 +180,5 @@ describe('Parser', function() {
 				text: 'Now that we know what we have—Jesus, this great High Priest' }
 			]);
 		});
-	});
-
-	describe('#parseText', function() {
-		var text = 'SKAPA RUM FÖR GUD\n\n\nPSALTAREN 62:6-9 (SFB)\n6 Endast i Gud har du din ro,';
-		var parsed = Parser.parseText(text);
-		//console.log(JSON.stringify(parsed, null, 2));
-		should(parsed).be.eql([
-			{
-				"title": "SKAPA RUM FÖR GUD"
-			},
-			{
-				"reference": "PSALTAREN 62:6-9 (SFB)",
-				"verse": {
-					"number": "6",
-					"text": "Endast i Gud har du din ro,"
-				}
-			}
-		]);
 	});
 });
