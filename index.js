@@ -25,8 +25,14 @@ app.use(express.static(Path.resolve(__dirname, 'www')));
 app.use('/account', express.static(accountBaseDir));
 app.use('/lib', express.static(Path.resolve(__dirname, 'bower_components')));
 app.use(function(req, res, next) {
-	req.account = Path.basename(req.body.account ? req.body.account : req.query.account);
-	req.template = Path.basename(req.body.template ? req.body.template : req.query.template);
+	if (req.body.account || req.query.account) {
+		req.account = Path.basename(req.body.account ? req.body.account : req.query.account);
+	}
+
+	if (req.body.template || req.query.template) {
+		req.template = Path.basename(req.body.template ? req.body.template : req.query.template);
+	}
+
 	req.accountDir = Path.resolve(accountBaseDir, req.account);
 	next();
 });
