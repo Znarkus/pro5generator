@@ -38,7 +38,7 @@ app.get('/template', function(req, res) {
 	}
 
 	glob(Path.resolve(req.accountDir, '*.pro5'), function(err, files) {
-		res.send(files.map(Path.basename));
+		res.send(files.map(f => Path.basename(f)));
 	});
 });
 

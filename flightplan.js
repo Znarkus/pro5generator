@@ -3,14 +3,14 @@ var plan = require('flightplan');
 
 plan.target('production', [
 	{
-		host: 'z.markushedlund.se',
-		username: 'markus',
+		host: 'app.markushedlund.com',
+		username: 'pro5gen',
 		agent: process.env.SSH_AUTH_SOCK
 	}
 ]);
 
 var tmpDir = 'pro5gen-' + new Date().getTime();
-var deployBasePath = '~/pro5gen/';
+var deployBasePath = '~/app/';
 var currentPath = deployBasePath + 'current';
 var latestPath = deployBasePath + tmpDir;
 
@@ -29,13 +29,12 @@ plan.remote(function(remote) {
 	remote.rm('-rf /tmp/' + tmpDir);
 
 	remote.log('Install dependencies');
-	
+
 	remote.with('cd ' + latestPath, function() {
 		remote.exec('npm --production install');
-		remote.exec('bower i');
-		remote.exec('npm run-script build');
+		remote.exec('npm run bower-install');
+		remote.exec('npm run build');
 	});
-
 
 	remote.log('Reload application');
 	remote.ln('-snf ' + latestPath + ' ' + currentPath);
