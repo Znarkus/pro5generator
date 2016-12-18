@@ -4,6 +4,7 @@ var should = require('should');
 var Parser = require('../lib/parser');
 var Promise = require('bluebird');
 var readFile = Promise.promisify(require('fs').readFile);
+var verseString = require('./util').verseString;
 
 describe('Parser', function() {
 	describe('#initialNumber', function() {
@@ -121,37 +122,37 @@ describe('Parser', function() {
 			var versesString = 'När ni.10 Samma sak.';
 			var verses = Parser.splitVerses(versesString);
 
-			should(verses).be.eql([
+			should(JSON.stringify(verses)).be.eql(JSON.stringify([
 				{ number: null, text: 'När ni.' },
 				{ number: { from: 10, to: 10 }, text: 'Samma sak.' }
-			]);
+			]));
 		});
 
 		it('should work with first number', function() {
 			var versesString = '10 Samma sak.';
 			var verses = Parser.splitVerses(versesString);
 
-			should(verses).be.eql([
+			should(JSON.stringify(verses)).be.eql(JSON.stringify([
 				{ number: { from: 10, to: 10 }, text: 'Samma sak.' }
-			]);
+			]));
 		});
 
 		it('should handle range verses', function() {
 			var versesString = '5-6 När 7 Efter 8 Han mat.';
 			var verses = Parser.splitVerses(versesString);
 
-			should(verses).be.eql([
+			should(JSON.stringify(verses)).be.eql(JSON.stringify([
 				{ number: { from: 5, to: 6 }, text: 'När' },
 				{ number: { from: 7, to: 7 }, text: 'Efter' },
 				{ number: { from: 8, to: 8 }, text: 'Han mat.' }
-			]);
+			]));
 		});
 
 		it('should handle range verses 2', function() {
 			var versesString = '1 När Jesus - 2 Jesus döpte - 3 lämnade. 4 På vägen. 5-6 När han. 7 Efter en. 8-9 Efter en. 10. aWD. 11. aaa. 12. bbb. 13. ccc. 14. ddd. 15. eee. 16. fff. 17-18. ggg. 19. hhh';
 			var verses = Parser.splitVerses(versesString);
 
-			should(verses).be.eql([
+			should(JSON.stringify(verses)).be.eql(JSON.stringify([
 				{ number: { from: 1, to: 1 }, text: 'När Jesus -' },
 				{ number: { from: 2, to: 2 }, text: 'Jesus döpte -' },
 				{ number: { from: 3, to: 3 }, text: 'lämnade.' },
@@ -168,17 +169,18 @@ describe('Parser', function() {
 				{ number: { from: 16, to: 16 }, text: '. fff.' },
 				{ number: { from: 17, to: 18 }, text: '8. ggg.' },
 				{ number: { from: 19, to: 19 }, text: '. hhh' }
-			]);
+			]));
 		});
 
 		it('should handle single range verse', function() {
 			var versesString = '14-16 Now that we know what we have—Jesus, this great High Priest';
 			var verses = Parser.splitVerses(versesString);
 
-			should(verses).be.eql([
+			should(JSON.stringify(verses)).be.eql(JSON.stringify([
 				{ number: { from: 14, to: 16 },
-				text: 'Now that we know what we have—Jesus, this great High Priest' }
-			]);
+				text: verseString`Now that we know what we have—Jesus, this great High Priest`
+				}
+			]));
 		});
 	});
 });
