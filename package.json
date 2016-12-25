@@ -27,7 +27,6 @@
     "moment": "^2.10.3"
   },
   "devDependencies": {
-    "flightplan": "^0.6.2",
     "mocha": "^2.2.5",
     "nodemon": "^1.9.1",
     "should": "^11.1.2",
