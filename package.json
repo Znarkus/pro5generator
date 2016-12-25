@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha",
+    "test": "mocha",
     "start": "DEBUG=* nodemon",
-    "watch": "node_modules/.bin/watchify lib/parser.js -s parser -o www/bundle.js --debug -v",
-    "build": "node_modules/.bin/browserify lib/parser.js -s parser -o www/bundle.js --debug -v",
+    "watch": "watchify lib/parser.js -s parser -o www/bundle.js --debug -v",
+    "build": "browserify lib/parser.js -s parser -o www/bundle.js --debug -v",
     "bower-install": "bower install"
   },
   "author": "",
