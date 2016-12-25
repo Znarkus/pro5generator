@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "start": "DEBUG=* nodemon",
+    "start": "node .",
+    "dev": "DEBUG=* nodemon",
     "watch": "watchify lib/parser.js -s parser -o www/bundle.js --debug -v",
     "build": "browserify lib/parser.js -s parser -o www/bundle.js --debug -v",
     "bower-install": "bower install"
