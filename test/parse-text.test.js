@@ -88,6 +88,20 @@ describe('parseText', function() {
 		]);
 	});
 
+	it('should handle unicode weirdness', function() {
+		should(
+			Parser.parseText('Psaltaren 56:9 (SFB15)\n6 Du ha\u030aller ra\u0308kning o\u0308verge dig.')
+		).be.eql([
+			{
+				"reference": "PSALTAREN 56:9 (SFB15)",
+				"verse": {
+					"number": "6",
+					"text": `Du håller räkning överge dig.`
+				}
+			}
+		]);
+	});
+
 	it('should handle non-empty blank rows', function(done) {
 		readFile(__dirname + '/resource/parseText-test1.txt').then(function(text) {
 			var parsed = Parser.parseText(text.toString('utf8'));
