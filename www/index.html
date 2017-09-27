@@ -5,7 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-	<title>Pro5 Generator</title>
+	<title>Pro5/6 Generator</title>
 
 	<!-- Bootstrap -->
 	<script src="/lib/angular/angular.min.js"></script>
@@ -78,6 +78,7 @@
 					_this.templates = templates.data;
 					_this.account = $stateParams.account;
 					_this.template = $stateParams.template ? $stateParams.template : _this.templates[0];
+          _this.templateExt = _this.template.match(/\.pro[56]$/)[0]
 
 					if (localStorage.getItem('lastText')) {
 						_this.text = localStorage.getItem('lastText');

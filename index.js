@@ -7,22 +7,30 @@ var generate = require('./lib/generator').generate;
 var Path = require('path');
 var mkdirp = require('mkdirp');
 var glob = require('glob');
-var app = express();
-var accountBaseDir = Path.resolve(getEnv('ACCOUNT_DIR', __dirname + '/account')) + '/';
-//var templateDir = accountDir +  //Path.resolve(getEnv('TEMPLATE_DIR', __dirname + '/template')) + '/';
-var port = getEnv('PORT', 3000);
+var AWS = require('aws-sdk');
+const fs = require('fs')
+const os = require('os')
 
-// Create generated dir
-glob(Path.resolve(accountBaseDir, '*'), function(err, dirs) {
-	_.forEach(dirs, function(dir) {
-		mkdirp(Path.resolve(dir, 'generated'));
-	});
+var s3 = new AWS.S3({
+  apiVersion: '2006-03-01',
+  region: process.env.AWS_S3_REGION,
+  params: { Bucket: process.env.AWS_S3_BUCKET }
 });
 
+var app = express();
+
+const supportedTemplateExt = [
+  '.pro5',
+  '.pro6',
+]
+
+var port = getEnv('PORT', 3000);
+
 // Init
+mkdirp('generated')
 app.use(bodyParser.json());
 app.use(express.static(Path.resolve(__dirname, 'www')));
-app.use('/account', express.static(accountBaseDir));
+app.use('/generated', express.static('generated'));
 app.use('/lib', express.static(Path.resolve(__dirname, 'bower_components')));
 app.use(function(req, res, next) {
 	if (req.body.account || req.query.account) {
@@ -31,34 +39,56 @@ app.use(function(req, res, next) {
 
 	if (req.body.template || req.query.template) {
 		req.template = Path.basename(req.body.template ? req.body.template : req.query.template);
+		req.templateExt = Path.extname(req.template)
+
+    if (!supportedTemplateExt.includes(req.templateExt)) {
+      return res.status(400).end();
+    }
 	}
 
-	req.accountDir = Path.resolve(accountBaseDir, req.account);
 	next();
 });
 
 // Routes
-app.get('/template', function(req, res) {
-	if (!req.accountDir) {
-		return res.status(400).end();
-	}
+app.get('/template', async (req, res) => {
+  const files = await s3.listObjectsV2({
+    Prefix: `${req.account}/`
+  }).promise()
 
-	glob(Path.resolve(req.accountDir, '*.pro5'), function(err, files) {
-		res.send(files.map(f => Path.basename(f)));
-	});
+  res.send(files.Contents
+    .filter(f => supportedTemplateExt.includes(Path.extname(f.Key)))
+    .map(f => Path.basename(f.Key))
+  )
 });
 
-app.post('/download', function(req, res) {
-	if (!req.account || !req.template || !req.accountDir || !req.body.parsed) {
+app.post('/download', async (req, res) => {
+	if (!req.account || !req.template || !req.body.parsed) {
 		return res.status(400).end();
 	}
 
+	const templatePath = `${os.tmpdir()}/${new Date().getTime()}${req.templateExt}`
+
+  const file = fs.createWriteStream(templatePath);
+
+	await new Promise((resolve, reject) => {
+    s3
+      .getObject({ Key: `${req.account}/${req.template}` })
+      .createReadStream()
+      .on('end', () => {
+        return resolve()
+      })
+      .on('error', (error) => {
+        return reject(error)
+      })
+      .pipe(file)
+  })
+
 	generate(
-		Path.resolve(req.accountDir, req.template),
+		templatePath,
 		req.body.parsed,
-		Path.resolve(req.accountDir, 'generated')
+		'generated'
 	).then(function(path) {
-		res.send({ url: '/account/' + req.account + '/generated/' + Path.basename(path) });
+		res.send({ url: '/generated/' + Path.basename(path) });
 	});
 });
 
