@@ -20,6 +20,8 @@ Defaults to 3000.
 - `AWS_S3_REGION` - example "eu-west-1"
 - `AWS_S3_BUCKET`
 
+Create a subdirectory for every account in the S3 bucket.
+Add .pro5 and .pro6 files there per account.
 
 ## Run
 
