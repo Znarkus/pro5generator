@@ -2,14 +2,14 @@
   "name": "pro5generator",
   "version": "1.0.0",
   "engines": {
-    "node": "8.5.0"
+    "node": "8.6.0"
   },
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "mocha",
     "start": "node .",
-    "dev": "DEBUG=* nodemon -r dotenv/config",
+    "dev": "DEBUG=* nodemon -r dotenv/config --ignore generated/",
     "watch": "watchify lib/parser.js -s parser -o www/bundle.js --debug -v",
     "build": "browserify lib/parser.js -s parser -o www/bundle.js --debug -v",
     "bower-install": "bower install",

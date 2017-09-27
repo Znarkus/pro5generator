@@ -82,17 +82,21 @@ p {
 	margin: 0 0 7px;
 }
 #preview-bar {
-	background: #D7E5ED;
-	text-align: center;
-	padding: 10px;
-	margin-bottom: 20px;
+  background: #D7E5ED;
+  text-align: center;
+  padding: 9px;
+  margin-bottom: 20px;
+  position: fixed;
+  right: 92px;
+  top: 0;
+  left: 51%;
 }
 button {
 	padding: 3px;
 	font-size: 18px;
 }
 #preview h1 {
-	border-top: 1px solid #AAA;
+	/*border-top: 1px solid #AAA;*/
 	padding-top: 5px;
 }
 #help {
