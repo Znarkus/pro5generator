@@ -8,11 +8,6 @@ with bible words for preach.
 ## Config
 Environment variables.
 
-### `ACCOUNT_DIR`
-Defaults to `account/`. Template files must be placed
-under `[ACCOUNT_DIR]/[ACCOUNT NAME]`, where `[ACCOUNT NAME]`
-is retrieved from the URL: `/#/editor/[ACCOUNT NAME]`
-
 ### `PORT`
 Defaults to 3000.
 
@@ -31,12 +26,12 @@ Add .pro5 and .pro6 files there per account.
 npm i
 npm run bower-install
 npm run build
-ACCOUNT_DIR=some/dir PORT=1234 node .
+AWS_S3_BUCKET=xyz PORT=1234 node .
 ```
 
 
 ## Test
 
 ```
-npm test
+npm t
 ```
