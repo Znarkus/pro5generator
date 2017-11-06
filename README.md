@@ -1,5 +1,7 @@
 # pro5generator
 
+[![Build Status](https://travis-ci.org/Znarkus/pro5generator.svg?branch=master)](https://travis-ci.org/Znarkus/pro5generator)
+
 Generate .pro5 and .pro6 files from predefined, selectable templates,
 with bible words for preach.
 
