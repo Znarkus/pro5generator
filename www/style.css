@@ -23,6 +23,10 @@ html {
 #container.ng-enter-active {
 	opacity: 1;
 }
+#loading-app {
+	font-size: 20px;
+	padding: 10px;
+}
 #toolbar {
 	position: absolute;
 	left: 10px;

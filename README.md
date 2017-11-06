@@ -1,6 +1,6 @@
 # pro5generator
 
-Generate .pro5 files from predefined, selectable templates,
+Generate .pro5 and .pro6 files from predefined, selectable templates,
 with bible words for preach.
 
 ## Config
