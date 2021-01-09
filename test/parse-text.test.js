@@ -93,7 +93,7 @@ describe('parseText', function() {
 			Parser.parseText('Psaltaren 56:9 (SFB15)\n6 Du ha\u030aller ra\u0308kning o\u0308verge dig.')
 		).be.eql([
 			{
-				"reference": "PSALTAREN 56:9 (SFB15)",
+				"reference": "Psaltaren 56:9 (SFB15)",
 				"verse": {
 					"number": "6",
 					"text": `Du håller räkning överge dig.`
