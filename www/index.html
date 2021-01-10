@@ -94,11 +94,16 @@
 						_this.text = example.data;
 					}
 
-					_this.parsed = Parser.parseText(_this.text);
+					_this.referenceCaps = false;
+					_this.verseCaps = false;
+					_this.parsed = Parser.parseText(_this.text, _this.referenceCaps, _this.verseCaps);
+
+					_this.referenceChangeCaps = function(value) { _this.referenceCaps = value; _this.textChanged(_this.text); };
+					_this.verseChangeCaps = function(value) { _this.verseCaps = value; _this.textChanged(_this.text); };
 
 					_this.textChanged = function(newValue) {
 						localStorage.setItem('lastText', newValue);
-						_this.parsed = Parser.parseText(newValue);
+						_this.parsed = Parser.parseText(newValue, _this.referenceCaps, _this.verseCaps);
 					};
 
 					_this.download = function() {

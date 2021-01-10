@@ -95,6 +95,19 @@ p {
   top: 0;
   left: 51%;
 }
+#preview-bar > button, #checkbox-container {
+	display:inline-block;
+	vertical-align:middle;
+}
+#checkbox-container {
+	height:40px;
+	margin-left:20px;
+	padding-top:4px;
+	text-align:left;
+}
+#checkbox-container span {
+	margin-left:4px;
+}
 button {
 	padding: 3px;
 	font-size: 18px;
