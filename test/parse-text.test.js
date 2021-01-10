@@ -201,4 +201,64 @@ describe('parseText', function() {
 			//should(parsed).be.eql();
 		});
 	});
+
+	it('should only make reference caps', function() {
+		var text = 'Psaltaren 62:6-9 (SFB)\n6 Endast i Gud har du din ro,';
+		var parsed = Parser.parseText(text, true, false);
+
+		should(parsed).be.eql([
+			{
+				"reference": "PSALTAREN 62:6-9 (SFB)",
+				"verse": {
+					"number": "6",
+					"text": verseString`Endast i Gud har du din ro,`
+				}
+			}
+		]);
+	});
+
+	it('should only make verse caps', function() {
+		var text = 'Psaltaren 62:6-9 (SFB)\n6 Endast i Gud har du din ro,';
+		var parsed = Parser.parseText(text, false, true);
+
+		should(parsed).be.eql([
+			{
+				"reference": "Psaltaren 62:6-9 (SFB)",
+				"verse": {
+					"number": "6",
+					"text": verseString`ENDAST I GUD HAR DU DIN RO,`
+				}
+			}
+		]);
+	});
+
+	it('should only make reference caps', function() {
+		var text = 'Psaltaren 62:6-9 (SFB)\n6 Endast i Gud har du din ro,';
+		var parsed = Parser.parseText(text, true, false);
+
+		should(parsed).be.eql([
+			{
+				"reference": "PSALTAREN 62:6-9 (SFB)",
+				"verse": {
+					"number": "6",
+					"text": verseString`Endast i Gud har du din ro,`
+				}
+			}
+		]);
+	});
+
+	it('should not affect conversion of case', function() {
+		var text = 'Psaltaren 62:6-9 (SFB)\n6 Endast i Gud har du din ro,';
+		var parsed = Parser.parseText(text, false, false);
+
+		should(parsed).be.eql([
+			{
+				"reference": "Psaltaren 62:6-9 (SFB)",
+				"verse": {
+					"number": "6",
+					"text": verseString`Endast i Gud har du din ro,`
+				}
+			}
+		]);
+	});
 });
