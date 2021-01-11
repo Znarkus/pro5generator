@@ -103,7 +103,7 @@
 
 					_this.textChanged = function(newValue) {
 						localStorage.setItem('lastText', newValue);
-						_this.parsed = Parser.parseText(newValue, _this.referenceCaps, _this.verseCaps);
+						_this.parsed = Parser.parseText(newValue, { referenceCaps: _this.referenceCaps, verseCaps: _this.verseCaps});
 					};
 
 					_this.download = function() {
