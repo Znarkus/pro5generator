@@ -16,10 +16,10 @@
 		<!--<input type="hidden" name="data" ng-value="pro5Ctrl.parsed">-->
 		<button ng-click="pro5Ctrl.download()">Download {{pro5Ctrl.templateExt}} file</button>
 		<div id="checkbox-container">
-			<input ng-model="referenceCaps" ng-change="pro5Ctrl.referenceChangeCaps(referenceCaps)" type="checkbox" name="reference"></input>
+			<input ng-model="referenceCaps" ng-change="pro5Ctrl.referenceChangeCaps(referenceCaps)" type="checkbox" id="reference"></input>
 			<label for="reference">Reference Caps</label>
 			<br>
-			<input ng-model="verseCaps" ng-change="pro5Ctrl.verseChangeCaps(verseCaps)" type="checkbox" name="verse"></input>
+			<input ng-model="verseCaps" ng-change="pro5Ctrl.verseChangeCaps(verseCaps)" type="checkbox" id="verse"></input>
 			<label for="verse">Verse Caps</label>
 		</div>
 		<!--<pre>{{pro5Ctrl.parsed}}</pre>-->
